@@ -48,12 +48,12 @@ public class ExternalScheduler implements SchedulingConfigurer {
                 t -> {
                     Calendar nextExecutionTime = new GregorianCalendar();
                     Date lastActualExecutionTime = t.lastActualExecutionTime();
-                    log.info("fecha"+lastActualExecutionTime);
-                    Calendar salida =  new GregorianCalendar();
+                    log.info("fecha" + lastActualExecutionTime);
+                    Calendar salida = new GregorianCalendar();
                     salida.setTime(lastActualExecutionTime != null ? lastActualExecutionTime : new Date());
- salida.add(Calendar.HOUR, 4);
-                    
-                        log.info("fecha"+salida.toString());
+                    salida.add(Calendar.HOUR, 4);
+
+                    log.info("fecha" + salida.toString());
                     nextExecutionTime.setTime(lastActualExecutionTime != null ? lastActualExecutionTime : new Date());
                     nextExecutionTime.add(Calendar.HOUR, 4);
                     return nextExecutionTime.getTime();
@@ -67,6 +67,9 @@ public class ExternalScheduler implements SchedulingConfigurer {
         return true;
     }
 
+
+    
+
     public boolean removeJob(String name) {
         if (!futureMap.containsKey(name)) {
             return false;
@@ -79,8 +82,7 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
     public void methodToBeExecuted(String jobName) {
         log.info("methodToBeExecuted: Next execution time of this will always be 5 seconds " + jobName);
-        
-        
+
         Boolean cancelado = removeJob(jobName);
 
         if (cancelado) {
