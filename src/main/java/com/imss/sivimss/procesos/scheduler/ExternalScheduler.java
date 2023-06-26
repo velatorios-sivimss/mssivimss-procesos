@@ -51,7 +51,20 @@ public class ExternalScheduler implements SchedulingConfigurer {
         String cveTarea = tareasDTO.getCveTarea();
 
         if (mapaProgramado.containsKey(cveTarea)) {
-            return false;
+            if (tareasDTO.getValidacion().equals("INSERT")) {
+                return false;
+            } else {
+                // si es una actualizacion se elimina la tarea y se regenera
+              Boolean tareaEliminada=  eliminarTarea(cveTarea);
+             
+                if (Boolean.TRUE.equals(tareaEliminada)) {
+                    log.info("Tarea eliminada correctamente");
+                } else {
+                    log.info("No se pudo cancela la tarea anterior");
+                    return false;
+                }
+            }
+
         }
         try {
             ScheduledFuture future = tareasProgramadas.getScheduler().schedule(() -> ejecutarTarea(tareasDTO),
