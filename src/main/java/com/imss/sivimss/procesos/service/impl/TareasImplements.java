@@ -1,6 +1,8 @@
 package com.imss.sivimss.procesos.service.impl;
 
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.procesos.utils.ConnectionUtil;
+import com.imss.sivimss.procesos.utils.LogUtil;
 import com.imss.sivimss.procesos.beans.OrdenServicio;
 import com.imss.sivimss.procesos.service.Tareas;
 
@@ -24,7 +27,8 @@ public class TareasImplements implements Tareas {
 
     private Connection connection;
     private Statement statement;
-    private ResultSet resultadoBusqueda ;
+    private ResultSet resultadoBusqueda;
+    private LogUtil logUtil;
 
     public String tareaODS(String idODS) throws SQLException {
         connection = jdbcConnection.getConnection();
@@ -51,10 +55,11 @@ public class TareasImplements implements Tareas {
 
             String actualizarCaracteristicasPaqueteTem = ods.actualizarCaracteristicasPaqueteTemporal(idODS);
             String actualizarCaracteristicasPaqueteDetalleTemp = ods.actualizarCaracteristicasPaqueteDetalleTemp(idODS);
-            String actualizarCaracteristicasPresupuestoTemporal = ods.actualizarCaracteristicasPresupuestoTemporal(idODS);
-            String actualizarCaracteristicasPresuestoDetalleTemp = ods.actualizarCaracteristicasPresuestoDetalleTemp(idODS);
-            String actualizarDonacionTemporal=ods.actualizarDonacionTemporal(idODS);
-           
+            String actualizarCaracteristicasPresupuestoTemporal = ods
+                    .actualizarCaracteristicasPresupuestoTemporal(idODS);
+            String actualizarCaracteristicasPresuestoDetalleTemp = ods
+                    .actualizarCaracteristicasPresuestoDetalleTemp(idODS);
+            String actualizarDonacionTemporal = ods.actualizarDonacionTemporal(idODS);
 
             statement.executeUpdate(actualizarCaracteristicasPaqueteTem);
             statement.executeUpdate(actualizarCaracteristicasPaqueteDetalleTemp);
@@ -72,6 +77,14 @@ public class TareasImplements implements Tareas {
             statement.close();
             connection.close();
             log.error("Exception {}", e.getMessage());
+
+            try {
+                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                        this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
 
         return salida;
