@@ -10,4 +10,5 @@ public class TareasDTO {
     private Integer totalHoraMinuto;
     private String tipoEjecucion; 
     private String validacion;
+    private Object datos;
 }

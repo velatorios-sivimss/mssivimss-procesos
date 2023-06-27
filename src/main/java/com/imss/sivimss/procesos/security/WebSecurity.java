@@ -37,7 +37,7 @@ public class WebSecurity {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// paths publicos
-		http.csrf().disable().authorizeRequests().antMatchers("/actuator/**","/catalogos/externos/enviar/correo/recuperacontrasenia","/lote/orden-servicio").permitAll().anyRequest().authenticated().and().exceptionHandling()
+		http.csrf().disable().authorizeRequests().antMatchers("/actuator/**","/lote/generico").permitAll().anyRequest().authenticated().and().exceptionHandling()
 		.authenticationEntryPoint(authenticationEntryPoint());
 		// ==añadir filtro a la configuracion de spring security
 		http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class).sessionManagement()

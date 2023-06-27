@@ -19,12 +19,12 @@ public class LoteController {
   @Autowired
   ExternalScheduler externalScheduler;
 
-  @PostMapping(path = "/orden-servicio", consumes = "application/json", produces = "application/json")
+  @PostMapping(path = "/generico", consumes = "application/json", produces = "application/json")
   public String scheduleATask(@RequestBody TareasDTO tareasDTO) {
     boolean result = externalScheduler.agregarTarea(tareasDTO);
     if (result) {
-      return "Job successfully scheduled!";
+      return "Tarea generada";
     }
-    return "There is already a job running for the specified name!";
+    return "La tarea ya tiene una ejecucion";
   }
 }

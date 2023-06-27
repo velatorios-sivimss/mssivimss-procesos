@@ -1,7 +1,11 @@
 package com.imss.sivimss.procesos.scheduler;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
@@ -10,11 +14,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+import com.imss.sivimss.procesos.model.request.ODSDTO;
 import com.imss.sivimss.procesos.model.request.TareasDTO;
+import com.imss.sivimss.procesos.service.Tareas;
+import com.imss.sivimss.procesos.utils.ConnectionUtil;
 
-import io.vavr.control.Try;
-
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
@@ -23,7 +28,23 @@ public class ExternalScheduler implements SchedulingConfigurer {
     private static Logger log = LoggerFactory.getLogger(ExternalScheduler.class);
     @Value("${numero-por-grupo}")
     private Integer numeroPorGrupo;
+
+    @Value("${spring.datasource.url}")
+    private String url;
+
+    @Value("${spring.datasource.username}")
+    private String usuario;
+
+    @Value("${spring.datasource.password}")
+    private String contrasenia;
+
     ScheduledTaskRegistrar tareasProgramadas;
+
+    @Autowired
+    ConnectionUtil connection;
+
+    @Autowired
+    Tareas tareas;
 
     Map<String, ScheduledFuture> mapaProgramado = new HashMap<>();
 
@@ -55,8 +76,8 @@ public class ExternalScheduler implements SchedulingConfigurer {
                 return false;
             } else {
                 // si es una actualizacion se elimina la tarea y se regenera
-              Boolean tareaEliminada=  eliminarTarea(cveTarea);
-             
+                Boolean tareaEliminada = eliminarTarea(cveTarea);
+
                 if (Boolean.TRUE.equals(tareaEliminada)) {
                     log.info("Tarea eliminada correctamente");
                 } else {
@@ -119,7 +140,9 @@ public class ExternalScheduler implements SchedulingConfigurer {
         try {
             log.info("Incicando Tarea", tareasDTO.getCveTarea());
 
-            String validarEjecucion = validarEjecucion(tareasDTO.getTipoEjecucion());
+            String datos = tareasDTO.getDatos().toString(); 
+
+            String validarEjecucion = validarEjecucion(tareasDTO.getTipoEjecucion(), datos);
             if (validarEjecucion.equals("ok")) {
                 Boolean cancelado = eliminarTarea(tareasDTO.getCveTarea());
 
@@ -128,22 +151,41 @@ public class ExternalScheduler implements SchedulingConfigurer {
                 } else {
                     log.info("No se pudo cancelar la tarea");
                 }
+            }else{
+                  Boolean cancelado = eliminarTarea(tareasDTO.getCveTarea());
+
+                if (Boolean.TRUE.equals(cancelado)) {
+                    log.info("Tarea finalizada correctamente");
+                } else {
+                    log.info("No se pudo cancelar la tarea");
+                }
             }
         } catch (Exception e) {
-            log.error("Exception", e.getMessage());
-            // TODO: handle exception
+            log.error("Exception {}", e.getMessage());
+           
         }
 
     }
 
-    private static String validarEjecucion(String tipoEjecucion) {
+    private String validarEjecucion(String tipoEjecucion, String datos) {
         String salida = "";
         switch (tipoEjecucion) {
             case "ODS":
-                salida = "ok";
+                try {
+                    Gson gson = new Gson();
+                    ODSDTO valor = gson.fromJson(datos, ODSDTO.class);
+                    salida = tareas.tareaODS(Integer.toString(valor.getIdODS()));
+                } catch (SQLException e) {
+                    salida = "error";
+                    log.error("SQLException {}", e.getMessage());
+                } catch (Exception ex) {
+                    salida = "error";
+                    log.error("Exception {}", ex.getMessage());
+                }
+
                 break;
-            case "ODSs":
-                salida = "ejecutarODS";
+            case "otro":
+                salida = "otro";
                 break;
             default:
                 salida = "noexiste";
