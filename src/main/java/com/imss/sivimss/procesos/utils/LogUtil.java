@@ -26,9 +26,7 @@ public class LogUtil {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LogUtil.class);
 
     public void crearArchivoLog(String tipoLog, String origen, String clasePath, String mensaje, String tiempoEjecucion
-           ) throws IOException {
-        Gson json = new Gson();
-         
+           ) throws IOException { 
         File archivo = new File(rutaLog + aplicacion + new SimpleDateFormat("ddMMyyyy").format(new Date()) + ".log");
         FileWriter escribirArchivo = null;
         try {
