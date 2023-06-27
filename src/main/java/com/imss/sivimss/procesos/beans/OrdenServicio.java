@@ -73,7 +73,15 @@ public class OrdenServicio {
     }
 
 
+public String actualizarDonacionTemporal(String idOrden) {
+        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_DONACION_ORDEN_SERVICIO_TEMP ");
+        queryHelper.agregarParametroValues("IND_ACTIVO", "0");
+        queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
+        query = queryHelper.obtenerQueryActualizar();
+        log.info(query);
+        return query;
+    }
 
 
 }

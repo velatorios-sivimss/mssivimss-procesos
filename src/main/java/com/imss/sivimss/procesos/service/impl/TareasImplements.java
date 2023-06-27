@@ -53,11 +53,14 @@ public class TareasImplements implements Tareas {
             String actualizarCaracteristicasPaqueteDetalleTemp = ods.actualizarCaracteristicasPaqueteDetalleTemp(idODS);
             String actualizarCaracteristicasPresupuestoTemporal = ods.actualizarCaracteristicasPresupuestoTemporal(idODS);
             String actualizarCaracteristicasPresuestoDetalleTemp = ods.actualizarCaracteristicasPresuestoDetalleTemp(idODS);
- 
+            String actualizarDonacionTemporal=ods.actualizarDonacionTemporal(idODS);
+           
+
             statement.executeUpdate(actualizarCaracteristicasPaqueteTem);
             statement.executeUpdate(actualizarCaracteristicasPaqueteDetalleTemp);
             statement.executeUpdate(actualizarCaracteristicasPresupuestoTemporal);
             statement.executeUpdate(actualizarCaracteristicasPresuestoDetalleTemp);
+            statement.executeUpdate(actualizarDonacionTemporal);
             resultadoBusqueda.close();
             statement.close();
             connection.close();
