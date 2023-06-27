@@ -50,7 +50,7 @@ public class OrdenServicio {
 
 
      public String actualizarCaracteristicasPresupuestoTemporal(String idOrden) {
-        final QueryHelper queryHelper = new QueryHelper("UPDATE CARACTERISTICAS_PRESUPUESTO_TEMP ");
+        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARACTERISTICAS_PRESUPUESTO_TEMP ");
         queryHelper.agregarParametroValues("IND_ACTIVO", "0");
         queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
