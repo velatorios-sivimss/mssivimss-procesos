@@ -1,6 +1,6 @@
 
 server:
-  port: 8080
+  port: 9090
   servlet:
     contextPath: /${spring.application.name}/v1/
 spring:
@@ -16,7 +16,7 @@ spring:
   datasource:
     platform: mariadb
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/SIVIBDDS?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Mexico_City #jdbc:mysql://10.102.44.18:3306/SIVIBDDS
+    url: jdbc:mysql://localhost:3306/SIVIBDDS9?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Mexico_City #jdbc:mysql://10.102.44.18:3306/SIVIBDDS
     username: root #pmsoluciones #root
     password: root #Tr1357.* #Maria2023
     timeBetweenEvictionRunsMillis: 1000
@@ -51,7 +51,7 @@ logging:
  
 
 jwt:
-  secretkey-flujo:  funcionamuybien
+  secretkey-dominios: funcionamuybiendominio
   expiration-milliseconds: 360
 
 management:
