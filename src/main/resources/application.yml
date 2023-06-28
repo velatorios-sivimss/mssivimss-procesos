@@ -16,19 +16,19 @@ spring:
   datasource:
     platform: mariadb
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/SIVIBDDS?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Mexico_City #jdbc:mysql://10.102.44.18:3306/SIVIBDDS
-    username: root #pmsoluciones #root
-    password: root #Tr1357.* #Maria2023
+    url: ${msit_CONNECTION_DB}
+    username: ${msit_USERNAME_DB}
+    password: ${msit_PASSWORD_DB}
     timeBetweenEvictionRunsMillis: 1000
     testWhileIdle: true
     validationQuery: SELECT 1
     hikari:
-       max-lifetime: 1800000
-       idle-timeout: 600000
-       connection-timeout: 30000
-       auto-commit: true
-       maximum-pool-size: 7
-       minimum-idle: 10
+      max-lifetime: ${msit_LIFE_TIME}
+      idle-timeout: ${msit_TIME_OUT}
+      connection-timeout: ${msit_CONNECTION_TIMEOUT}
+      auto-commit: true
+      maximum-pool-size: ${msit_CONNECTION_POOL}
+      minimum-idle: ${msit_CONNECTION_IDLE}
 
       
       
@@ -51,8 +51,8 @@ logging:
  
 
 jwt:
-  secretkey-flujo:  funcionamuybien
-  expiration-milliseconds: 360
+  secretkey-flujo: ${msit_SECRET_KEY}
+  expiration-milliseconds: ${msit_SECRET_KEY_EXPIRATION}
 
 management:
       endpoints:
@@ -61,7 +61,7 @@ management:
                 include:
                     health,info,metrics
 
-numero-por-grupo: 5
+numero-por-grupo: ${msit_NUMERO_POR_GRUPO}
 
-ruta-log: 'C:/logs/'
+ruta-log:  ${msit_RUTA_LOG}
 
