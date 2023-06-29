@@ -51,7 +51,7 @@ logging:
  
 
 jwt:
-  secretkey-flujo: ${msit_SECRET_KEY_DOMINIO}
+  secretkey-dominios: ${msit_SECRET_KEY_DOMINIO}
   expiration-milliseconds: ${msit_SECRET_KEY_EXPIRATION}
 
 management:
