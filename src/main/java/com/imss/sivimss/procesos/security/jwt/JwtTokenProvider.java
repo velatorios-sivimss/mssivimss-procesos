@@ -27,7 +27,7 @@ public class JwtTokenProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
- 	@Value("${jwt.secretkey-flujo}")
+	@Value("${jwt.secretkey-dominios}")
 	private String jwtSecretFlujo;
 
 	@Value("${jwt.expiration-milliseconds}")
