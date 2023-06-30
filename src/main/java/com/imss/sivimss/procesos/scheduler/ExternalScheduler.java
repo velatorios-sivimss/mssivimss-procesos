@@ -74,11 +74,12 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
     public boolean agregarTarea(TareasDTO tareasDTO) {
         String cveTarea = tareasDTO.getCveTarea();
+        String  validacionTarea = tareasDTO.getValidacion().toUpperCase();
 
         if (mapaProgramado.containsKey(cveTarea)) {
-            if (tareasDTO.getValidacion().equals("INSERT")) {
+            if (validacionTarea.equals("INSERTAR")) {
                 return false;
-            } else if (tareasDTO.getValidacion().equals("CANCELAR")) {
+            } else if (validacionTarea.equals("CANCELAR")) {
                 eliminarTarea(cveTarea);
                 return true;
             } else {
