@@ -27,7 +27,7 @@ public class LoteController {
     boolean result = externalScheduler.agregarTarea(tareasDTO);
     
     if (result) {
-    	response= new Response<>(false, 200, "Tarea generada");
+    	response= new Response<>(false, 200, "Tarea generada o eliminada");
     }
     response= new Response<>(true, 200, "La tarea ya tiene una ejecucion");
     return response;
