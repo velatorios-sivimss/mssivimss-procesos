@@ -1,6 +1,6 @@
 package com.imss.sivimss.procesos.scheduler;
 
-import java.io.IOException; 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.procesos.model.request.ODSDTO;
 import com.imss.sivimss.procesos.model.request.TareasDTO;
-import com.imss.sivimss.procesos.service.Tareas; 
+import com.imss.sivimss.procesos.service.Tareas;
 import com.imss.sivimss.procesos.utils.ConnectionUtil;
 import com.imss.sivimss.procesos.utils.LogUtil;
 import java.util.logging.Level;
@@ -50,7 +50,7 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
     Map<String, ScheduledFuture> mapaProgramado = new HashMap<>();
 
-    private  LogUtil logUtil;
+    private LogUtil logUtil;
 
     @Bean
     public TaskScheduler poolScheduler() {
@@ -74,10 +74,14 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
     public boolean agregarTarea(TareasDTO tareasDTO) {
         String cveTarea = tareasDTO.getCveTarea();
+        String  validacionTarea = tareasDTO.getValidacion().toUpperCase();
 
         if (mapaProgramado.containsKey(cveTarea)) {
-            if (tareasDTO.getValidacion().equals("INSERT")) {
+            if (validacionTarea.equals("INSERTAR")) {
                 return false;
+            } else if (validacionTarea.equals("CANCELAR")) {
+                eliminarTarea(cveTarea);
+                return true;
             } else {
                 // si es una actualizacion se elimina la tarea y se regenera
                 Boolean tareaEliminada = eliminarTarea(cveTarea);
@@ -117,11 +121,12 @@ public class ExternalScheduler implements SchedulingConfigurer {
         } catch (Exception e) {
             // TODO: handle exception
             log.info(e.getMessage());
-              try {
-                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),  this.getClass().getPackage().toString(), "SQLException"+ e.getMessage(), null);
-            } catch (IOException e1) { 
+            try {
+                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                        this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
+            } catch (IOException e1) {
                 log.error("IOException {}", e1.getMessage());
-       
+
             }
             return false;
         }
@@ -137,6 +142,8 @@ public class ExternalScheduler implements SchedulingConfigurer {
             ScheduledFuture future = mapaProgramado.get(cveTarea);
             future.cancel(true);
             mapaProgramado.remove(cveTarea);
+            log.info("Tarea cancelada correctamente ");
+
             return true;
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -145,12 +152,12 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
     }
 
-    private void ejecutarTarea(TareasDTO tareasDTO)   {
+    private void ejecutarTarea(TareasDTO tareasDTO) {
 
         try {
             log.info("Incicando Tarea", tareasDTO.getCveTarea());
 
-            String datos = tareasDTO.getDatos().toString(); 
+            String datos = tareasDTO.getDatos().toString();
 
             String validarEjecucion = validarEjecucion(tareasDTO.getTipoEjecucion(), datos);
             if (validarEjecucion.equals("ok")) {
@@ -161,8 +168,8 @@ public class ExternalScheduler implements SchedulingConfigurer {
                 } else {
                     log.info("No se pudo cancelar la tarea");
                 }
-            }else{
-                  Boolean cancelado = eliminarTarea(tareasDTO.getCveTarea());
+            } else {
+                Boolean cancelado = eliminarTarea(tareasDTO.getCveTarea());
 
                 if (Boolean.TRUE.equals(cancelado)) {
                     log.info("Tarea finalizada correctamente");
@@ -172,13 +179,13 @@ public class ExternalScheduler implements SchedulingConfigurer {
             }
         } catch (Exception e) {
             log.error("Exception {}", e.getMessage());
-             try {
-                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),  this.getClass().getPackage().toString(), "SQLException"+ e.getMessage(), null);
+            try {
+                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                        this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
             } catch (IOException e1) {
                 log.error("IOException {}", e1.getMessage());
             }
-                    
-           
+
         }
 
     }
@@ -194,13 +201,15 @@ public class ExternalScheduler implements SchedulingConfigurer {
                 } catch (SQLException e) {
                     salida = "error";
                     log.error("SQLException {}", e.getMessage());
-                    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),  this.getClass().getPackage().toString(), "SQLException"+ e.getMessage(), null);
-                    
+                    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                            this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
+
                 } catch (Exception ex) {
                     salida = "error";
                     log.error("Exception {}", ex.getMessage());
-                    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),  this.getClass().getPackage().toString(), "Exception"+ ex.getMessage(), null);
-                    
+                    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                            this.getClass().getPackage().toString(), "Exception" + ex.getMessage(), null);
+
                 }
 
                 break;
