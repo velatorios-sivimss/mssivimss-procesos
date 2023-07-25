@@ -34,6 +34,16 @@ public class OrdenServicio {
         log.info(query);
         return query;
     }
+    
+    // actualizar salida donacion
+ 	public String actualizarSalidaDonacionTemporal(String idOrdenServicio) {
+ 		final QueryHelper q = new QueryHelper("UPDATE SVC_SALIDA_DONACION_TEMP ");
+ 		q.agregarParametroValues("IND_ACTIVO", "0");
+ 		q.addWhere("ID_ORDEN_SERVICIO = "+idOrdenServicio);
+ 		query = q.obtenerQueryActualizar();
+ 		log.info(query);
+ 		return query;
+ 	}
 
 
       public String actualizarCaracteristicasPaqueteDetalleTemp(String idOrden) {
