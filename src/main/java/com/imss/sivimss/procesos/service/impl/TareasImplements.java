@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.procesos.utils.ConnectionUtil;
 import com.imss.sivimss.procesos.utils.LogUtil;
+import com.imss.sivimss.procesos.beans.CajaBeans;
 import com.imss.sivimss.procesos.beans.OrdenServicio;
 import com.imss.sivimss.procesos.service.Tareas;
 
@@ -85,12 +86,38 @@ public class TareasImplements implements Tareas {
                         this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
-                e1.printStackTrace();
+                log.error("Exception {}", e1.getMessage());
             }
         }
 
         return salida;
 
+    }
+
+    public void cierrCaja(String proviene) throws SQLException {
+
+        try {
+
+            CajaBeans cajaBeans = new CajaBeans();
+            connection = jdbcConnection.getConnection();
+            statement = connection.createStatement();
+            String sql = cajaBeans.cerrarCaja(proviene);
+            statement.executeUpdate(sql);
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+
+            statement.close();
+            connection.close();
+            log.error("Exception {}", e.getMessage());
+
+            try {
+                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                        this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
+            } catch (IOException e1) {
+                log.error("Exception {}", e1.getMessage());
+            }
+        }
     }
 
 }
