@@ -26,7 +26,7 @@ public class OrdenServicio {
     }
 
     public String actualizarCaracteristicasPaqueteTemporal(String idOrden) {
-        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARACTERISTICAS_PAQUETE_TEMP ");
+        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARAC_PAQUETE_TEMP ");
         queryHelper.agregarParametroValues("IND_ACTIVO", "0");
         queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
@@ -48,10 +48,10 @@ public class OrdenServicio {
 
       public String actualizarCaracteristicasPaqueteDetalleTemp(String idOrden) {
 
-          query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PAQUETE_TEMP SET IND_ACTIVO = 0"
-                + " WHERE ID_CARACTERISTICAS_PAQUETE IN "
-                + " (SELECT DISTINCT ID_CARACTERISTICAS_PAQUETE "
-                + " FROM SVC_CARACTERISTICAS_PAQUETE_TEMP"
+          query = " UPDATE SVC_DETALLE_CARAC_PAQ_TEMP SET IND_ACTIVO = 0"
+                + " WHERE ID_CARAC_PAQUETE IN "
+                + " (SELECT DISTINCT ID_CARAC_PAQUETE "
+                + " FROM SVC_CARAC_PAQUETE_TEMP"
                 + " WHERE ID_ORDEN_SERVICIO ="+idOrden+")";
         log.info(query);
         return query;
