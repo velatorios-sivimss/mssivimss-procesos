@@ -60,7 +60,7 @@ public class OrdenServicio {
 
 
      public String actualizarCaracteristicasPresupuestoTemporal(String idOrden) {
-        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARACTERISTICAS_PRESUPUESTO_TEMP ");
+        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_CARAC_PRESUP_TEMP ");
         queryHelper.agregarParametroValues("IND_ACTIVO", "0");
         queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
@@ -72,10 +72,10 @@ public class OrdenServicio {
 
          public String actualizarCaracteristicasPresuestoDetalleTemp(String idOrden) {
 
-          query = " UPDATE SVC_DETALLE_CARACTERISTICAS_PRESUPUESTO_TEMP SET IND_ACTIVO = 0"
-                + " WHERE ID_CARACTERISTICAS_PRESUPUESTO IN "
-                + " (SELECT DISTINCT ID_CARACTERISTICAS_PRESUPUESTO "
-                + " FROM SVC_CARACTERISTICAS_PRESUPUESTO_TEMP"
+          query = " UPDATE SVC_DETALLE_CARAC_PRESUP_TEMP SET IND_ACTIVO = 0"
+                + " WHERE ID_CARAC_PRESUPUESTO IN "
+                + " (SELECT DISTINCT ID_CARAC_PRESUPUESTO "
+                + " FROM SVC_CARAC_PRESUP_TEMP"
                 + " WHERE ID_ORDEN_SERVICIO ="+idOrden+")";
         log.info(query);
         return query;
@@ -84,7 +84,7 @@ public class OrdenServicio {
 
 
 public String actualizarDonacionTemporal(String idOrden) {
-        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_DONACION_ORDEN_SERVICIO_TEMP ");
+        final QueryHelper queryHelper = new QueryHelper("UPDATE SVC_DONACION_ORDEN_SERV_TEMP ");
         queryHelper.agregarParametroValues("IND_ACTIVO", "0");
         queryHelper.addWhere(" ID_ORDEN_SERVICIO = " + idOrden);
 
