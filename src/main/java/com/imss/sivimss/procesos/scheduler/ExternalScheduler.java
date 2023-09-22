@@ -74,7 +74,7 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
     public boolean agregarTarea(TareasDTO tareasDTO) {
         String cveTarea = tareasDTO.getCveTarea();
-        String  validacionTarea = tareasDTO.getValidacion().toUpperCase();
+        String validacionTarea = tareasDTO.getValidacion().toUpperCase();
 
         if (mapaProgramado.containsKey(cveTarea)) {
             if (validacionTarea.equals("INSERTAR")) {
@@ -96,28 +96,34 @@ public class ExternalScheduler implements SchedulingConfigurer {
 
         }
         try {
-            ScheduledFuture future = tareasProgramadas.getScheduler().schedule(() -> ejecutarTarea(tareasDTO),
-                    t -> {
-                        Calendar nextExecutionTime = new GregorianCalendar();
-                        Integer totalHoraMinuto = tareasDTO.getTotalHoraMinuto();
-                        Date lastActualExecutionTime = t.lastActualExecutionTime();
-                        nextExecutionTime
-                                .setTime(lastActualExecutionTime != null ? lastActualExecutionTime : new Date());
-                        if (tareasDTO.getTipoHoraMinuto().equals("HORA")) {
-                            nextExecutionTime.add(Calendar.HOUR, totalHoraMinuto);
-                        } else if (tareasDTO.getTipoHoraMinuto().equals("MINUTOS")) {
-                            nextExecutionTime.add(Calendar.MINUTE, totalHoraMinuto);
-                        } else {
-                            nextExecutionTime.add(Calendar.SECOND, totalHoraMinuto);
-                        }
+            TaskScheduler taskScheduler = tareasProgramadas.getScheduler();
+            ScheduledFuture<?> future = null;
+            if (taskScheduler != null) {
+                future = taskScheduler.schedule(() -> ejecutarTarea(tareasDTO),
+                        t -> {
+                            Calendar nextExecutionTime = new GregorianCalendar();
+                            Integer totalHoraMinuto = tareasDTO.getTotalHoraMinuto();
+                            Date lastActualExecutionTime = t.lastActualExecutionTime();
+                            nextExecutionTime
+                                    .setTime(lastActualExecutionTime != null ? lastActualExecutionTime : new Date());
+                            if (tareasDTO.getTipoHoraMinuto().equals("HORA")) {
+                                nextExecutionTime.add(Calendar.HOUR, totalHoraMinuto);
+                            } else if (tareasDTO.getTipoHoraMinuto().equals("MINUTOS")) {
+                                nextExecutionTime.add(Calendar.MINUTE, totalHoraMinuto);
+                            } else {
+                                nextExecutionTime.add(Calendar.SECOND, totalHoraMinuto);
+                            }
 
-                        return nextExecutionTime.getTime();
-                    });
+                            return nextExecutionTime.getTime();
+                        });
 
-            configureTasks(tareasProgramadas);
-            mapaProgramado.put(cveTarea, future);
+                configureTasks(tareasProgramadas);
+                mapaProgramado.put(cveTarea, future);
 
-            return true;
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             // TODO: handle exception
             log.info(e.getMessage());
@@ -139,7 +145,7 @@ public class ExternalScheduler implements SchedulingConfigurer {
         }
 
         try {
-            ScheduledFuture future = mapaProgramado.get(cveTarea);
+            ScheduledFuture<?> future = mapaProgramado.get(cveTarea);
             future.cancel(true);
             mapaProgramado.remove(cveTarea);
             log.info("Tarea cancelada correctamente ");
@@ -155,25 +161,27 @@ public class ExternalScheduler implements SchedulingConfigurer {
     private void ejecutarTarea(TareasDTO tareasDTO) {
 
         try {
-            log.info("Incicando Tarea", tareasDTO.getCveTarea());
+            log.info("Incicando Tarea {}", tareasDTO.getCveTarea());
 
             String datos = tareasDTO.getDatos().toString();
 
             String validarEjecucion = validarEjecucion(tareasDTO.getTipoEjecucion(), datos);
             if (validarEjecucion.equals("ok")) {
                 Boolean cancelado = eliminarTarea(tareasDTO.getCveTarea());
-
                 if (Boolean.TRUE.equals(cancelado)) {
                     log.info("Tarea finalizada correctamente");
                 } else {
                     log.info("No se pudo cancelar la tarea");
                 }
-            } else {
+            }
+            if (!validarEjecucion.equals("ok")) {
                 Boolean cancelado = eliminarTarea(tareasDTO.getCveTarea());
 
                 if (Boolean.TRUE.equals(cancelado)) {
                     log.info("Tarea finalizada correctamente");
-                } else {
+                }
+
+                if (!Boolean.TRUE.equals(cancelado)) {
                     log.info("No se pudo cancelar la tarea");
                 }
             }
