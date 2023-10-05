@@ -40,5 +40,17 @@ public class TareasScheduler {
         }
 
     }
+    
+
+    // se ejecuta la tarea a las 00:01 todos los dias
+    @Scheduled(cron = "0 01 00 * * ?")
+    public void montoComision() {
+        try {
+            tareas.montoComision("cron");
+        } catch (SQLException e) {
+            log.error("Exception {}", e.getMessage());
+        }
+
+    }
 
 }
