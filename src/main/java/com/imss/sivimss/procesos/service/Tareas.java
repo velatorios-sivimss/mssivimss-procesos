@@ -7,6 +7,6 @@ public interface Tareas {
 
    void cierrCaja(String proviene) throws SQLException;
 
-   void montoComision(String proviene) throws SQLException;
+   void montoComision() throws SQLException;
 
 }

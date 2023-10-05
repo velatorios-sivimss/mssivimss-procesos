@@ -121,14 +121,14 @@ public class TareasImplements implements Tareas {
         }
     }
 
-    public void montoComision(String proviene) throws SQLException {
+    public void montoComision() throws SQLException {
 
         try {
         	log.info("Ejecutando Cierre de comisiones...");
-        	ComisionesBeans cajaBeans = new ComisionesBeans();
+        	ComisionesBeans comisionesBeans = new ComisionesBeans();
             connection = jdbcConnection.getConnection();
             statement = connection.createStatement();
-            String sql = cajaBeans.cerrarComisiones(proviene);
+            String sql = comisionesBeans.cerrarComisiones();
             statement.executeUpdate(sql);
             statement.close();
             connection.close();

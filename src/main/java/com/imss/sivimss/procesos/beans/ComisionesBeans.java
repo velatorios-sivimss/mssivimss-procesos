@@ -7,15 +7,10 @@ public class ComisionesBeans {
     private static Logger log = LoggerFactory.getLogger(ComisionesBeans.class);
     String query;
 
-    public String cerrarComisiones(String proviene) {
-
-        query = "UPDATE  SVT_COMISION_MENSUAL SET" +
-                " IND_ACTIVO = coalesce(0, IND_ACTIVO), FEC_BAJA = CURDATE(), ID_USUARIO_BAJA = 0"   ;
-
-        if (proviene.equals("cron")) {
-            query = "UPDATE  SVT_COMISION_MENSUAL SET" +
-                    " IND_ACTIVO = coalesce(0, IND_ACTIVO), FEC_BAJA = CURDATE(), ID_USUARIO_BAJA = 0"   ;
-        }
+    public String cerrarComisiones() {
+            query = "UPDATE  SVT_COMISION_MENSUAL SET"
+                    + " IND_ACTIVO = coalesce(0, IND_ACTIVO), FEC_BAJA = CURDATE(), ID_USUARIO_BAJA = 0"
+            		+ " WHERE NUM_MES_COMISION = DATE_FORMAT(CURDATE(),'%m') - 1 AND NUM_ANIO_COMISION = DATE_FORMAT(CURDATE(),'%Y')";
         log.info(query);
         return query;
 
