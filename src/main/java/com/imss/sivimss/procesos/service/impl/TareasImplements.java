@@ -16,6 +16,7 @@ import com.imss.sivimss.procesos.utils.ConnectionUtil;
 import com.imss.sivimss.procesos.utils.LogUtil;
 import com.imss.sivimss.procesos.beans.CajaBeans;
 import com.imss.sivimss.procesos.beans.OrdenServicio;
+import com.imss.sivimss.procesos.beans.ComisionesBeans;
 import com.imss.sivimss.procesos.service.Tareas;
 
 @Service
@@ -34,7 +35,7 @@ public class TareasImplements implements Tareas {
     public String tareaODS(String idODS) throws SQLException {
         connection = jdbcConnection.getConnection();
         String salida = "eror";
-        try {
+        try {  
 
             OrdenServicio ods = new OrdenServicio();
             String buscarODSPREORDEN = ods.buscarODSPREORDEN(idODS);
@@ -120,4 +121,29 @@ public class TareasImplements implements Tareas {
         }
     }
 
+    public void montoComision(String proviene) throws SQLException {
+
+        try {
+        	log.info("Ejecutando Cierre de comisiones...");
+        	ComisionesBeans cajaBeans = new ComisionesBeans();
+            connection = jdbcConnection.getConnection();
+            statement = connection.createStatement();
+            String sql = cajaBeans.cerrarComisiones(proviene);
+            statement.executeUpdate(sql);
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+
+            statement.close();
+            connection.close();
+            log.error("Exception {}", e.getMessage());
+
+            try {
+                logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+                        this.getClass().getPackage().toString(), "SQLException" + e.getMessage(), null);
+            } catch (IOException e1) {
+                log.error("Exception {}", e1.getMessage());
+            }
+        }
+    }
 }
