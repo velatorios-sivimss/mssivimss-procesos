@@ -46,7 +46,7 @@ public class TareasScheduler {
     @Scheduled(cron = "0 01 00 * * ?")
     public void montoComision() {
         try {
-            tareas.montoComision("cron");
+            tareas.montoComision();
         } catch (SQLException e) {
             log.error("Exception {}", e.getMessage());
         }
