@@ -57,7 +57,7 @@ public class TareasScheduler {
     @Scheduled(cron = "0 01 00 * * ?")
     public void cambiarEstatusPlanesPa() {
         try {
-            tareas.cambiarEstatuspagoAnticipado();;
+            tareas.cambiarEstatuspagoAnticipado();
         } catch (SQLException e) {
             log.error("Exception {}", e.getMessage());
         }
