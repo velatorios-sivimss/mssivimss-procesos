@@ -16,18 +16,18 @@ public class PagoAnticipado {
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 		
 		selectQueryUtil.select(
-				"DISTINCT"
-				+"SPA.ID_PLAN_SFPA")
+				" DISTINCT "
+				+"SPA.ID_PLAN_SFPA ")
 		.from("SVT_PLAN_SFPA SPA")
 		.innerJoin("SVT_PAGO_SFPA SFPA", "SPA.ID_PLAN_SFPA = SFPA.ID_PLAN_SFPA")
 		.where("SPA.ID_ESTATUS_PLAN_SFPA in (1,2,3)");
 		return selectQueryUtil.build();
 	}
 	public String cambiarEstatusConAdeudo() {
-		QueryHelper queryHelper= new QueryHelper("SVT_PAGO_SFPA");
+		QueryHelper queryHelper= new QueryHelper("UPDATE SVT_PAGO_SFPA");
 		
 		
-		queryHelper.addColumn("ID_ESTATUS_PAGO ", "2");
+		queryHelper.addColumn("ID_ESTATUS_PAGO", "2");
 		queryHelper.addWhere("FEC_PARCIALIDAD < CURRENT_DATE() AND ID_ESTATUS_PAGO = 8 AND ID_PLAN_SFPA in (".concat(this.consultaPlanesPa().concat(")")));
 		query=queryHelper.obtenerQueryActualizar();
 		log.info(query);
@@ -35,8 +35,8 @@ public class PagoAnticipado {
 	}
 	
 	public String cambiarEstatusPorPagar() {
-		QueryHelper queryHelper= new QueryHelper("SVT_PAGO_SFPA");
-		queryHelper.addColumn("ID_ESTATUS_PAGO ", "8");
+		QueryHelper queryHelper= new QueryHelper("UPDATE SVT_PAGO_SFPA");
+		queryHelper.addColumn("ID_ESTATUS_PAGO", "8");
 		queryHelper.addWhere("FEC_PARCIALIDAD = CURRENT_DATE() AND ID_ESTATUS_PAGO = 7 AND ID_PLAN_SFPA in (".concat(this.consultaPlanesPa().concat(")")));
 		query=queryHelper.obtenerQueryActualizar();
 		log.info(query);
@@ -44,7 +44,7 @@ public class PagoAnticipado {
 	}
 	
 	public String cambiarEstatusPlanPa() {
-		QueryHelper queryHelper= new QueryHelper("SVT_PLAN_SFPA");
+		QueryHelper queryHelper= new QueryHelper("UPDATE SVT_PLAN_SFPA");
 		SelectQueryUtil selectQueryUtil= new SelectQueryUtil();
 
 		selectQueryUtil.select("case"

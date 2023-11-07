@@ -24,6 +24,7 @@ public class TareasScheduler {
     public void execute() {
         try {
             tareas.cierrCaja("soloUnaVez");
+            tareas.cambiarEstatuspagoAnticipado();
         } catch (SQLException e) {
             log.error("Exception {}", e.getMessage());
         }
