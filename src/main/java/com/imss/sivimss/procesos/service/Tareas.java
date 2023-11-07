@@ -9,4 +9,6 @@ public interface Tareas {
 
    void montoComision() throws SQLException;
 
+   void cambiarEstatuspagoAnticipado() throws SQLException;
+
 }
